@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { authActions } from "../Redux/Slices/AuthSlice";
+import { Form, Button, Col } from "react-bootstrap";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./SignUpPage.css"; // Import your custom CSS file
+
 const SignUpPage = () => {
     const dispatch = useDispatch();
     const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
-    const isLogin = useSelector(state=>state.auth.isLogin);
+    const isLogin = useSelector(state => state.auth.isLogin);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [cPassword, setCpassword] = useState("");
@@ -46,85 +50,102 @@ const SignUpPage = () => {
                 const responseData = await response.json()
                 if (response.ok) {
                     console.log(`${isLogin ? 'Login' : 'Sign-Up'} successful`, 'success');
-                    //console.log(responseData);
                     if(isLogin){
-                    dispatch(authActions.login(responseData.idToken));
-                    localStorage.setItem("email" , email);
-                    localStorage.setItem("idToken" , responseData.idToken);
-                    setToken(responseData.idToken);
-                    dispatch(authActions.login());
-                    
+                        dispatch(authActions.login(responseData.idToken));
+                        localStorage.setItem("email" , email);
+                        localStorage.setItem("idToken" , responseData.idToken);
+                        setToken(responseData.idToken);
+                        dispatch(authActions.login());
                     }   
                 } else {
                     alert(responseData.error.message || 'Authentication failed');
                 }
             } catch (error) {
                 console.error('An error occurred during authentication', error);
-            }finally {
+            } finally {
                 setLoading(false); // Set loading to false after the API call is completed
             }
         }
     }
+    
     useEffect(() => {
-        
         if (token) {
           localStorage.setItem("idToken", token);
         } else {
           localStorage.removeItem("idToken");
         }
       }, [token]);
+
     return (
-        <>
-            <div className="form-div">
-            <div className="main">
-            <span className="l1">SignUp</span><br/>
-            </div>
-            <form onSubmit={formSubmitHandler} className="form-container">
-                <div >
-                    <label htmlFor="email">Email</label>
-                    <input 
-                    type="email" 
-                    id="email" 
-                    value={email} 
-                    onChange={emailInputHandler} 
-                    required 
-                    placeholder="User Email" />
-                    <label htmlFor="password">Password</label>
-                    <input 
-                    type="password"
-                    id="password" 
-                    className="password"
-                    placeholder="Password" 
-                    onChange={passwordInputHandler}/>    
-                    {!isLogin && <label htmlFor="cpassword">Confirm Password</label>}
-                    {!isLogin && <input 
-                    type="password" 
-                    id="cpassword" 
-                    value={cPassword} 
-                    onChange={cPasswordInputHandler} 
-                    required 
-                    placeholder="Confirm Password" />}
-                    <button type="submit" disabled={loading}>
+        <div className="container d-flex align-items-center justify-content-center vh-100 ">
+            <div className="row justify-content-center ">
+                <div className="col-md-6 border p-4">
+                    <div className="form-group">
+                        <h2>Sign Up</h2>
+                    </div> <br/>
+                    <Form onSubmit={formSubmitHandler}>
+                        <Form.Group controlId="email">
+                            <Form.Control 
+                                type="email" 
+                                value={email} 
+                                onChange={emailInputHandler} 
+                                required 
+                                placeholder="Email" 
+                                className={email ? "floating-input" : ""}
+                            
+                            />
+                            <br/>
+                        </Form.Group>
+
+                        <Form.Group controlId="password">
+                            <Form.Control 
+                                type="password" 
+                                placeholder="Password" 
+                                onChange={passwordInputHandler}
+                                className={password ? "floating-input" : ""}
+                            />
+                            <br/>
+                        </Form.Group>
+
+                        {!isLogin && 
+                            <Form.Group controlId="cpassword">
+                                <Form.Control 
+                                    type="password" 
+                                    value={cPassword} 
+                                    onChange={cPasswordInputHandler} 
+                                    required 
+                                    placeholder="Confirm Password" 
+                                    className={cPassword ? "floating-input" : ""}
+                                />
+                                
+                            </Form.Group>
+                        }
+                        <br/>
+                        <Button type="submit" disabled={loading} variant="primary" className="mb-3">
                             {loading ? (
-                                <div className="loader-container">
-                                    <div className="loader"></div>
+                                <div className="spinner-border" role="status">
+                                    <span className="sr-only">Loading...</span>
                                 </div>
                             ) : (
                                 isLogin ? "Login" : "Sign-Up"
                             )}
-                        </button>
-                    {isLogin && <span className="forgot">Forgotten Password?</span>}
-                </div>
-                <div className="toggle">
-                    <button type="button"
-                        onClick={() => dispatch(authActions.setIsLogin(!isLogin))}
-                        className="toggle-button"
-                    >{isLogin ? "Create New Account? Sign Up" : "Have an account? Login"}</button>
-                </div>
-            </form></div>
-           
-            
-        </>
+                        </Button>
+                        
+                        {isLogin && <span className="forgot">Forgotten Password?</span>}
+                    </Form>
+                    </div>
+                    <div className="toggle mt-3 " >
+                        <Button 
+                            type="button"
+                            onClick={() => dispatch(authActions.setIsLogin(!isLogin))}
+                            variant="primary"
+                        >
+                            {isLogin ? "Create New Account? Sign Up" : "Have an account? Login"}
+                        </Button>
+                    </div>
+                
+            </div>
+        </div>
     )
 };
 
