@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { authActions } from "../Redux/Slices/AuthSlice";
-import { Form, Button, Col } from "react-bootstrap";
+import { Form, Button, Col, FloatingLabel, Card } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./SignUpPage.css"; // Import your custom CSS file
 
@@ -79,49 +79,66 @@ const SignUpPage = () => {
     return (
         <div className="container d-flex align-items-center justify-content-center vh-100 ">
             <div className="row justify-content-center ">
-                <div className="col-md-6 border p-4">
+                <div className="col-8 border p-4">
                     <div className="form-group">
-                        <h2>Sign Up</h2>
+                        <h2>{isLogin ? 'Login' : 'SignUp'}</h2>
                     </div> <br/>
                     <Form onSubmit={formSubmitHandler}>
                         <Form.Group controlId="email">
+                            <FloatingLabel
+                            controlId="floatingInput"
+                            label="Email address"
+                            >
                             <Form.Control 
                                 type="email" 
                                 value={email} 
                                 onChange={emailInputHandler} 
                                 required 
-                                placeholder="Email" 
-                                className={email ? "floating-input" : ""}
+                                placeholder="Email address"
+                                
                             
                             />
+                            </FloatingLabel>
                             <br/>
                         </Form.Group>
-
+                        
                         <Form.Group controlId="password">
+                        <FloatingLabel
+                            controlId="floatingInput"
+                            label="Password"
+                            >
                             <Form.Control 
                                 type="password" 
                                 placeholder="Password" 
                                 onChange={passwordInputHandler}
-                                className={password ? "floating-input" : ""}
+                                
                             />
+                            </FloatingLabel>
                             <br/>
                         </Form.Group>
 
                         {!isLogin && 
                             <Form.Group controlId="cpassword">
+                            <FloatingLabel
+                            controlId="floatingInput"
+                            label="Confirm Password"
+                            >
                                 <Form.Control 
                                     type="password" 
                                     value={cPassword} 
                                     onChange={cPasswordInputHandler} 
                                     required 
                                     placeholder="Confirm Password" 
-                                    className={cPassword ? "floating-input" : ""}
+                                    
                                 />
-                                
+                                </FloatingLabel>
                             </Form.Group>
                         }
-                        <br/>
-                        <Button type="submit" disabled={loading} variant="primary" className="mb-3">
+                        
+                        {!isLogin && cPassword.length>5 && password !== cPassword && (
+                            <div style={{ color: 'red' }}>Passwords do not match</div>
+                            )}<br/>
+                        <Button type="submit" disabled={loading} variant="primary" className="mb-3 col-12 rounded-5" >
                             {loading ? (
                                 <div className="spinner-border" role="status">
                                     <span className="sr-only">Loading...</span>
@@ -130,15 +147,16 @@ const SignUpPage = () => {
                                 isLogin ? "Login" : "Sign-Up"
                             )}
                         </Button>
-                        
+                        <br/>
                         {isLogin && <span className="forgot">Forgotten Password?</span>}
                     </Form>
                     </div>
+                    
                     <div className="toggle mt-3 " >
                         <Button 
                             type="button"
                             onClick={() => dispatch(authActions.setIsLogin(!isLogin))}
-                            variant="primary"
+                            className="border border-1 border-black rounded-0 " 
                         >
                             {isLogin ? "Create New Account? Sign Up" : "Have an account? Login"}
                         </Button>
