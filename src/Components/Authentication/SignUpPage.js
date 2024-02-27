@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { authActions } from "../Redux/Slices/AuthSlice";
-import { Form, Button, Col, FloatingLabel, Card } from "react-bootstrap";
+import { Form, Button, FloatingLabel } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./SignUpPage.css"; // Import your custom CSS file
+import { useNavigate } from "react-router";
 
 const SignUpPage = () => {
     const dispatch = useDispatch();
-    const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
+    //const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
     const isLogin = useSelector(state => state.auth.isLogin);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -15,7 +16,7 @@ const SignUpPage = () => {
     const [loading, setLoading] = useState(false);
     const storedToken = localStorage.getItem("idToken");
     const [token , setToken] = useState(storedToken)
-
+    const navigate = useNavigate();
     const emailInputHandler = (event) => {
         setEmail(event.target.value);
     }
@@ -56,6 +57,7 @@ const SignUpPage = () => {
                         localStorage.setItem("idToken" , responseData.idToken);
                         setToken(responseData.idToken);
                         dispatch(authActions.login());
+                        navigate('/layout')
                     }   
                 } else {
                     alert(responseData.error.message || 'Authentication failed');
