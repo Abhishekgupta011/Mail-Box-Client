@@ -1,0 +1,22 @@
+.mailbox-container {
+    max-width: 100%;
+  }
+  
+  .toolbarClassName {
+    border: none;
+  }
+  
+  .wrapperClassName {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .editorClassName {
+    border: none;
+    min-height: 300px;
+    padding: 10px;
+  }
+  
+  .editorClassName:focus {
+    outline: none;
+  }
