@@ -38,7 +38,7 @@ const Mailbox = () => {
     // Additional validation for CC and BCC fields if required
 
     try {
-      const fetchData = await fetch("https://crudcrud.com/api/fb83211ca0384baaa87ae0a674a17350/mail", {
+      const fetchData = await fetch("https://crudcrud.com/api/ec8eba03ed84445b9d6179905d3ab2a9/mail", {
         method: "POST",
         headers: {
           "Content-type": "application/json",

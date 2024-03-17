@@ -1,0 +1,25 @@
+.bg-grey {
+    min-height: 100vh; /* Set minimum height to 100% of viewport height */
+    background-color: rgb(245, 243, 243);
+}
+  .flex-column{
+    text-align: initial;
+    float: left;
+    width: 100%;
+    
+  }
+  .flex-column :hover{
+    background-color: rgba(90, 177, 218, 0.596);
+    font-weight: 500;
+    border-left: 2px  solid  rgba(35, 135, 182, 0.596);
+  }
+
+  .sentlist:hover {
+    cursor: pointer;
+    border: 1px solid rgb(221, 216, 216);
+    box-shadow: inset;
+}
+
+ 
+  
+  
