@@ -38,7 +38,7 @@ const Mailbox = () => {
     // Additional validation for CC and BCC fields if required
 
     try {
-      const fetchData = await fetch("https://crudcrud.com/api/ec8eba03ed84445b9d6179905d3ab2a9/mail", {
+      const fetchData = await fetch("https://crudcrud.com/api/11eb61c2593d46058b53db60cfb6d9c5/mail", {
         method: "POST",
         headers: {
           "Content-type": "application/json",
@@ -50,6 +50,7 @@ const Mailbox = () => {
             ...(bcc.trim() !== "" && { bcc }),         
             subject,
             textContent,
+            read: false,
         }),
       });
 
@@ -62,7 +63,7 @@ const Mailbox = () => {
       console.error("Error sending email:", error);
       alert("Failed to send email. Please try again later.");
     }
-   }, [to , cc , bcc , subject ,editorState]);
+   }, [to , cc , bcc , subject ,editorState ]);
 
   const convertValueCc = () => {
     setShowCcBtn(true);
