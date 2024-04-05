@@ -16,7 +16,7 @@ const EmailInterface = () => {
     const [activeLink, setActiveLink] = useState('inbox');
     const [showModal, setShowModal] = useState(false);
       const [selectedEmailId, setSelectedEmailId] = useState(null);
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
     const firebaseUrl = 'https://mbc-project-fd64b-default-rtdb.firebaseio.com';
 
     // const redirectMailbox = () => {
@@ -220,7 +220,7 @@ return (
                                     
                                         <span className={` email ${!email.read ? 'bold' : ''}`}>
                                         {email.read ? null : (
-                                            <span variant="primary" className=" badge mr-2"> </span>
+                                            <span variant="primary" className=" badge mr-2" data-testid='blue-dot'> </span>
                                         )}{" "}
                                         {email.SenderMail}
                                         </span>  
