@@ -15,6 +15,8 @@ const authSlice = createSlice({
     logout(state) {
       state.token = null;
       state.isLoggedIn = false;
+      localStorage.removeItem('idToken'); // remove token from local storage
+      localStorage.removeItem('email')
     },
     setIsLogin(state , action){
       state.isLogin=action.payload;

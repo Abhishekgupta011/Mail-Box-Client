@@ -1,9 +1,26 @@
+.form-container{
+    background-color: rgb(234, 250, 244);
+}
+.form-css{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    background-color: white;
+}
+.emailoutlinedicon , .form-group{
+    text-align: initial;
+}
+.form-box{
+    width: 50%;
+    padding-left: 50px;
+}
 .floating-input {
     position: relative;
     padding: 5px 10px;
     border: none;
     border-bottom: 1px solid #ced4da;
     transition: all 0.3s;
+    width: 100%;
 }
 
 .floating-input:focus {

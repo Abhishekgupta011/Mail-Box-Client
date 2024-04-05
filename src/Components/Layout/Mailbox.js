@@ -29,6 +29,8 @@ const Mailbox = () => {
     console.log("Subject:", subject);
     console.log("Email content:", textContent);
     console.log("Email content:", emailContent);
+    const currentTime = new Date().toLocaleTimeString('en-US', { hour12: true , hour: '2-digit', minute: '2-digit' });
+    console.log("Sent Time:", currentTime);
     // Email validation regex
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(to)) {
@@ -38,7 +40,7 @@ const Mailbox = () => {
     // Additional validation for CC and BCC fields if required
 
     try {
-      const fetchData = await fetch("https://crudcrud.com/api/11eb61c2593d46058b53db60cfb6d9c5/mail", {
+      const fetchData = await fetch("https://mbc-project-fd64b-default-rtdb.firebaseio.com/mail.json", {
         method: "POST",
         headers: {
           "Content-type": "application/json",
@@ -51,6 +53,7 @@ const Mailbox = () => {
             subject,
             textContent,
             read: false,
+            currentTime,
         }),
       });
 
@@ -88,7 +91,6 @@ const Mailbox = () => {
   }
   return (
     <Container>
-      <h1 className="mb-4">New Email</h1>
       <Form>
         {showNewInput && (
             <Form.Group controlId="new" className="d-flex align-items-center">

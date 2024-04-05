@@ -1,24 +1,104 @@
 .bg-grey {
     min-height: 100vh; /* Set minimum height to 100% of viewport height */
-    background-color: rgb(245, 243, 243);
+    
 }
-  .flex-column{
+
+  .flex-column .nav-link{
     text-align: initial;
-    float: left;
+    display: flex;
+    align-items: center; 
     width: 100%;
+    color: black; 
+    height: 30px;
     
   }
-  .flex-column :hover{
-    background-color: rgba(90, 177, 218, 0.596);
-    font-weight: 500;
-    border-left: 2px  solid  rgba(35, 135, 182, 0.596);
-  }
 
+  .flex-column :hover{
+    background-color: lightgray; /* Example background color for focused links */
+    border-left: 2px  solid  rgba(119, 123, 124, 0.596);
+    border-radius: 0 20px 20px 0;
+  }
+  
   .sentlist:hover {
     cursor: pointer;
     border: 1px solid rgb(221, 216, 216);
     box-shadow: inset;
+  }
+  .search{
+    border-radius: 25px;
+    background-color: white;
+  }
+
+  .inbox-email{
+    text-align: initial;
+  }
+
+.subject{
+  font-weight: 800;
 }
+
+.email-entry{
+  background-color: rgb(222, 245, 238);
+  text-align: initial; 
+}
+
+
+.email-entry:hover,.email-border:hover {
+  box-shadow: 0 5px 15px 0 rgba(0, 0, 0, 0.3) !important;
+  border: 1px solid #dadcdd !important;
+  margin-bottom: 5px;
+}
+
+.nav-link:focus {
+  background-color: rgba(90, 177, 218, 0.596);
+  border-left: 2px  solid  rgba(25, 145, 175, 0.596);
+  border-radius: 0 20px 20px 0;
+}
+.email {
+  width: 25%;
+  margin-left: 1.5%;
+}
+.sub{
+  width: 55%;
+  overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.time{
+  width: 10%;
+  text-align: center;
+}
+.textcontent{
+  font-weight: normal;
+  
+}
+.bold {
+  font-weight: bold;
+}
+
+.badge{
+  color: rgb(48 130 215);
+  background-color: rgb(48, 130, 215);
+  width: 0.1rem;
+  height: 15px;
+  transform: translateY(4px);
+  margin-left: -20px;
+  border-radius: 50%;
+}
+.compose-button{
+  background-color: rgb(185, 230, 241);
+  padding: 6%;
+  border: none;
+  font-weight: 500;
+}
+.compose-button:hover{
+  background-color: #90b8cc;
+}
+/* .nav-icons{
+  text-align: initial;
+  margin-left: 0;
+} */
+
 
  
   

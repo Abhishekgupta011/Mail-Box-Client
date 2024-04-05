@@ -3,10 +3,11 @@ import './App.css'
 import SignUpPage from './Components/Authentication/SignUpPage';
 import { useSelector } from 'react-redux';
 // import Layout from './Components/Layout/Layout';
-import MailNavbar from './Components/Navbar/Navbar';
+//import MailNavbar from './Components/Navbar/Navbar';
 import Mailbox from './Components/Layout/Mailbox';
 import MailHeader from './Components/Layout/Header';
 import EmailInterface from './Components/Layout/EmailInterface';
+import EmailPage from './Components/Layout/EmailPage';
 
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
       
       </>}/>}
        <Route path='/mailbox' element={<Mailbox/>}/>
+       {/* {<Route path = '/emailpage/:emailid' element={<EmailPage/>}/>} */}
     </Routes>
       
     </div>

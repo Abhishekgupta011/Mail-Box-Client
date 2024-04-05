@@ -5,6 +5,8 @@ import { Form, Button, FloatingLabel } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./SignUpPage.css"; // Import your custom CSS file
 import { useNavigate } from "react-router";
+import MailHeader from "../Layout/Header";
+import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 
 const SignUpPage = () => {
     const dispatch = useDispatch();
@@ -37,7 +39,7 @@ const SignUpPage = () => {
         } else {
             try {
                 setLoading(true);
-                const response = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:${isLogin ? 'signInWithPassword' : 'signUp'}?key=AIzaSyCdWb-Hhul7dXAXB_TLPvzYurC29mEmV6Y`, {
+                const response = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:${isLogin ? 'signInWithPassword' : 'signUp'}?key=AIzaSyC9KcNd_QpooEhedttX8KyKR6bKk6Xf3wQ`, {
                     method: 'POST',
                     headers: {
                         "Content-Type": 'application/json'
@@ -79,13 +81,20 @@ const SignUpPage = () => {
       }, [token]);
 
     return (
+        <div className="form-container"> 
         <div className="container d-flex align-items-center justify-content-center vh-100 ">
             <div className="row justify-content-center ">
-                <div className="col-8 border p-4">
-                    <div className="form-group">
-                        <h2>{isLogin ? 'Login' : 'SignUp'}</h2>
-                    </div> <br/>
-                    <Form onSubmit={formSubmitHandler}>
+            
+                <div className="form-css col-10 border p-4 rounded">
+                <div className="emailoutlinedicon">
+                   {<EmailOutlinedIcon  style={{ fontSize:"78px"}}/>}
+                   <div className="form-group">
+                        <h2>{isLogin ? 'Login a Gmail Account' : 'Register a Gmail Account'}</h2>
+                    </div>
+                </div>
+                <div className="form-box">    
+                     <br/>
+                    <Form onSubmit={formSubmitHandler} className="input-css">
                         <Form.Group controlId="email">
                             <FloatingLabel
                             controlId="floatingInput"
@@ -153,7 +162,7 @@ const SignUpPage = () => {
                         {isLogin && <span className="forgot">Forgotten Password?</span>}
                     </Form>
                     </div>
-                    
+                    </div>
                     <div className="toggle mt-3 " >
                         <Button 
                             type="button"
@@ -163,8 +172,9 @@ const SignUpPage = () => {
                             {isLogin ? "Create New Account? Sign Up" : "Have an account? Login"}
                         </Button>
                     </div>
-                
+                    
             </div>
+        </div>
         </div>
     )
 };

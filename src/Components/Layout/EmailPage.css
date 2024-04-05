@@ -1,0 +1,77 @@
+/* EmailPage.css */
+
+.email-container {
+    margin: 20px;
+    padding: 20px;
+    border-radius: 5px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    height: 100vh;
+  }
+  
+  .email-subject {
+    text-align: initial;
+    margin-left: 5.8%;
+    font-size: 24px;
+    font-weight: 400;
+    margin-bottom: 10px;
+  }
+  
+  .email-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  
+  .icon-and-mails {
+    display: flex;
+    align-items: center;
+  }
+  
+  .icon {
+    margin-right: 10px;
+  }
+  
+  .receiver-mail {
+    font-size: 15px;
+    font-weight: 700;
+    color: #333;
+  }
+  
+  .sent-time {
+    font-size: 14px;
+    color: #666;
+  }
+  
+  .email-body {
+   
+    font-size: 16px;
+    line-height: 1.5;
+    
+  }
+  .email-body-container{
+    /* border: 1px solid black; */
+    text-align: initial; /* Align text to justify */
+    padding-left: 55px;
+    margin-bottom: 40px;
+  }
+  .buttons-container{
+    width: 22%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-left: 55px;
+    /* border: 1px solid black; */
+    float: left;
+  }
+  .reply , .forward{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .mail-buttons{ 
+    border: 1px solid black;
+    border-radius: 25px;
+  }
+  
