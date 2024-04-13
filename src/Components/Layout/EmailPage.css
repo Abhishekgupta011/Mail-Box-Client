@@ -55,6 +55,7 @@
     text-align: initial; /* Align text to justify */
     padding-left: 55px;
     margin-bottom: 40px;
+    white-space: pre-line;
   }
   .buttons-container{
     width: 22%;

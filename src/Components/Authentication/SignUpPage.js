@@ -59,7 +59,8 @@ const SignUpPage = () => {
                         localStorage.setItem("idToken" , responseData.idToken);
                         setToken(responseData.idToken);
                         dispatch(authActions.login());
-                        navigate('/navbar')
+                        navigate('/navbar/inbox')
+                        console.log('ecc')
                     }   
                 } else {
                     alert(responseData.error.message || 'Authentication failed');

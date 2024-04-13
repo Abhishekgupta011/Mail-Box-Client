@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router';
+import { Navigate, Route, Routes } from 'react-router';
 import './App.css'
 import SignUpPage from './Components/Authentication/SignUpPage';
 import { useSelector } from 'react-redux';
@@ -10,27 +10,22 @@ import EmailInterface from './Components/Layout/EmailInterface';
 import EmailPage from './Components/Layout/EmailPage';
 
 
+
 function App() {
-  const isLoggedIn = useSelector(state=>state.auth)
   return (
-    <div className="App">
-    <Routes>
-      <Route path='/' element={<SignUpPage/>}/>
-      {isLoggedIn && <Route path='/navbar' element={<>
-      <MailHeader/>
-      
-        {/* <MailNavbar/> */}
-        <EmailInterface />
-        {/* <Routes>
-          <Route path='/navbar' element={<EmailInterface/>}/>
-        </Routes> */}
-      
-      </>}/>}
-       <Route path='/mailbox' element={<Mailbox/>}/>
-       {/* {<Route path = '/emailpage/:emailid' element={<EmailPage/>}/>} */}
-    </Routes>
-      
-    </div>
+    
+      <div className="App">
+        <Routes>
+          <Route path="/" element={<SignUpPage />} />
+          <Route path="/navbar/*" element={<>
+            <MailHeader />
+            <EmailInterface />
+
+          </>} />
+          
+        </Routes>
+      </div>
+    
   );
 }
 
