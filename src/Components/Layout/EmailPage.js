@@ -6,7 +6,7 @@ import ComposeModal from "./ComposeModal";
 import ReplyIcon from '@mui/icons-material/Reply';
 import ForwardIcon from '@mui/icons-material/Forward';
 
-const EmailPage = ({ emailid }) => {
+const EmailPage = (props) => {
   const [emailSubject, setEmailSubject] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -19,7 +19,7 @@ const EmailPage = ({ emailid }) => {
   useEffect(() => {
     const fetchEmailSubject = async () => {
       try {
-        const response = await fetch(`https://mbc-project-fd64b-default-rtdb.firebaseio.com/mail/${emailid}.json`);
+        const response = await fetch(`https://mbc-project-fd64b-default-rtdb.firebaseio.com/mail/${props.emailid}.json`);
         if (response.ok) {
           const emailData = await response.json();
           setEmailSubject(emailData.subject);
@@ -38,7 +38,7 @@ const EmailPage = ({ emailid }) => {
     };
 
     fetchEmailSubject();
-  }, [emailid]);
+  }, [props.emailid]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -70,8 +70,14 @@ const EmailPage = ({ emailid }) => {
           <div className="icon" >
             <AccountCircleIcon style={{ fontSize: "3rem", color: "grey" }} />
           </div>
-          <div>
-            <span className="receiver-mail">{senderMail}</span>
+          <div className="mail-body">
+            <span className="receiver-mail">{props.displaySenderMail ?  senderMail : 
+              <>
+                <span>{`${senderMail}`}</span>
+                <br />
+                <span className="to-mail">{`To: ${receiverMails}`}</span>
+              </>}
+            </span>
           </div>
         </div>
         <div>

@@ -1,34 +1,40 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
 
-const EmailInterfaceSlice = createSlice({
-    name: "emailInterface",
-    initialState: {
-        emailFieldValue: "",
-        subjectFieldValue: "",
-        messageFieldValue: "",
-        isLoading: false,
-        errorMessage: null,
+const initialState = {
+  sentEmails: [],
+  inboxEmails: [],
+  unreadMessages: 0,
+  displaySent: false,
+  selectedEmailId: null,
+  selectedMailIdToDelete: null,
+};
+
+export const emailInterfaceSlice = createSlice({
+  name: 'emailInterface',
+  initialState,
+  reducers: {
+    setSentEmails: (state, action) => {
+      state.sentEmails = action.payload;
     },
-    reducers: {
-        setEmailFieldValue(state, action) {
-            return { ...state, emailFieldValue: action.payload };
-        },
-        setSubjectFieldValue(state, action) {
-            return { ...state, subjectFieldValue: action.payload };
-        },
-        resetMessageFieldValue(state) {
-            return { ...state, messageFieldValue: "" };
-        },
-        startSendEmail(state) {
-            state.isLoading = true;
-            state.errorMessage = null;
-        },
-        sendEmailSuccess(state, action) {
-            const newState = { ...state, isLoading: false };
-            Object.assign(newState, action.payload);
-            return newState;
-        },
-    }
+    setInboxEmails: (state, action) => {
+      state.inboxEmails = action.payload;
+    },
+    setUnreadMessages: (state, action) => {
+      state.unreadMessages = action.payload;
+    },
+    setDisplaySent: (state, action) => {
+      state.displaySent = action.payload;
+    },
+    setSelectedEmailId: (state, action) => {
+      state.selectedEmailId = action.payload;
+    },
+    setSelectedMailIdToDelete: (state, action) => {
+      state.selectedMailIdToDelete = action.payload;
+    },
+    // Add more reducers as needed
+  },
 });
-export const EmailInterfaceActions = EmailInterfaceSlice.actions;
-export default EmailInterfaceSlice.reducer;
+
+export const emailInterfaceActions = emailInterfaceSlice.actions;
+
+export default emailInterfaceSlice.reducer;

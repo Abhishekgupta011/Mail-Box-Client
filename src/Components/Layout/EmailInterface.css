@@ -45,18 +45,24 @@
   border-radius: 0 20px 20px 0;
 }
 
-
+.dot-badge{
+  display: flex;
+  align-items: baseline;
+  padding: 0;
+  margin: 0;
+}
 
 /* Email entry badges */
 .badge {
   color: rgb(48 130 215);
   background-color: rgb(48, 130, 215);
-  width: 0.1rem;
-  height: 15px;
-  transform: translateY(4px);
-  margin-left: -20px;
+  width: 10px;
+  height: 10px;
+  
   border-radius: 50%;
+  padding: 0;
 }
+
 
 /* Compose button styles */
 .compose-button {
@@ -131,7 +137,7 @@
 .content {
   height: 27px;
   overflow: hidden;
-  white-space:  nowrap;
+ 
   text-overflow: ellipsis;
   align-items: center;
   text-align: initial;

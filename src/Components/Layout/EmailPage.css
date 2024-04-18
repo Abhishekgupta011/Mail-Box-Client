@@ -75,4 +75,11 @@
     border: 1px solid black;
     border-radius: 25px;
   }
-  
+  .to-mail{
+    color: #666;
+    font-weight: 400;
+    
+  }
+  .mail-body{
+    text-align: initial;
+  }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Button, Form, FormControl, InputGroup, Nav, Table } from 'react-bootstrap';
 import './EmailInterface.css';
-import {  useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import EmailPage from './EmailPage';
 import ComposeModal from './ComposeModal';
 import InboxIcon from '@mui/icons-material/Inbox';
@@ -9,18 +9,15 @@ import StarBorderIcon from '@mui/icons-material/StarBorder';
 import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
 import FileOpenOutlinedIcon from '@mui/icons-material/FileOpenOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { useDispatch, useSelector } from 'react-redux';
+import { emailInterfaceActions } from '../Redux/Slices/EmailInterfaceSlice';
 
 const EmailInterface = () => {
-    const [sentEmails, setSentEmails] = useState([]);
-    const [inboxEmails, setInboxEmails] = useState([]);
-    const [unreadMessages, setUnreadMessages] = useState(0); // Track the number of unread messages
-    const [displaySent, setDisplaySent] = useState(false); // Track whether to display sent emails or inbox emails
+    const { sentEmails, inboxEmails, unreadMessages, displaySent, selectedEmailId } = useSelector((state) => state.emailInterface);
+    const [selectedMailIdToDelete , setSelectedMailIdToDelete] = useState(null);
+    const dispatch = useDispatch();
     const [activeLink, setActiveLink] = useState('inbox');
-    const [showModal, setShowModal] = useState(false);
-    const [selectedEmailId, setSelectedEmailId] = useState(null);
-    const [selectedMailIdToDelete, setSelectedMailIdToDelete] = useState(null);
- 
-    const location = useLocation();
+    const [showModal, setShowModal] = useState(false); 
     const navigate = useNavigate();
     const firebaseUrl = 'https://mbc-project-fd64b-default-rtdb.firebaseio.com';
 
@@ -39,60 +36,66 @@ const EmailInterface = () => {
                 const inbox = emails.filter((email) => email.ReceiverMails.includes(userEmail));
                 const sent = emails.filter((email) => email.SenderMail === userEmail)
                 const unread = inbox.filter((email) => !email.read); // Filter unread messages
-                setSentEmails(sent);
-                setInboxEmails(inbox);
-                setUnreadMessages(unread.length); // Set the number of unread messages
+                dispatch(emailInterfaceActions.setSentEmails(sent));
+                dispatch(emailInterfaceActions.setInboxEmails(inbox));
+                dispatch(emailInterfaceActions.setUnreadMessages(unread.length)); // Set the number of unread messages
             }
         } catch (error) {
             console.error(error);
         }
     };
     useEffect(() => {
-        // Function to handle pathname changes and update state accordingly
         const handlePathnameChange = () => {
-            const pathname = location.pathname;
+            const pathname = window.location.pathname;
             if (pathname === '/navbar/sent') {
+                
+                console.log(12)
                 handleSentClick();
-            } else if (pathname.startsWith('/navbar/inbox')) {
-                const emailId = pathname.substring(13); // Extract the email ID from the pathname
-                handleEmailClick(emailId);
+            } else if (pathname.startsWith(`/navbar/${!displaySent? "inbox" : "sent"}/`)) {
+                
+                const emailId = pathname.substring(`/navbar/${!displaySent? "inbox" : "sent"}/`.length);
+                console.log(123)
+                console.log(emailId);
+                {!displaySent ? handleEmailClick(emailId): handleSentClick()}
+                console.log(!displaySent ? true : false)
             } else if (pathname === '' || pathname === '/navbar/inbox') {
+                
+                console.log(1234)
                 handleInboxClick();
             }
             if (pathname === '/navbar') {
+                console.log(12345)
                 setActiveLink('inbox');
             }
         };
-
-        // Initial setup based on the current pathname
         handlePathnameChange();
+        window.addEventListener('popstate', handlePathnameChange);
+        return () => window.removeEventListener('popstate', handlePathnameChange);
+    }, []);
 
-        // Cleanup: No cleanup needed since we are not subscribing to anything
-    }, []); // Added navigate to the dependencies array to satisfy React's useEffect linting warning
-
-    
+   
 
     const handleSentClick = () => {
         fetchEmails(); // Fetch sent emails
-        setDisplaySent(true); // Set the flag to display sent emails
+        dispatch(emailInterfaceActions.setDisplaySent(true)); // Set the flag to display sent emails
         setActiveLink('sent');
-        setSelectedEmailId(null)
+        dispatch(emailInterfaceActions.setSelectedEmailId(null));
         navigate('/navbar/sent') 
        
     };
 
     const handleInboxClick = () => {
         fetchEmails(); // Fetch inbox emails
-        setDisplaySent(false); // Set the flag to display inbox emails
+        dispatch(emailInterfaceActions.setDisplaySent(false));  // Set the flag to display inbox emails
         setActiveLink('inbox'); // Remove focus from inbox tab
-        setSelectedEmailId(null);
+        dispatch(emailInterfaceActions.setSelectedEmailId(null));
         navigate('/navbar/inbox'); 
     };
     
 
     const handleEmailClick = async (emailId) => {
-        setSelectedEmailId(emailId);
-        navigate(`/navbar/inbox/${emailId}`); // Navigate to message page with selected email ID
+        dispatch(emailInterfaceActions.setSelectedEmailId(emailId));
+        navigate(`/navbar/${!displaySent ? "inbox":"sent"}/${emailId}`); // Navigate to message page with selected email ID
         const emailToUpdate = inboxEmails.find((email) => email.id === emailId);
     
         if (!emailToUpdate) {
@@ -115,9 +118,9 @@ const EmailInterface = () => {
                 const updatedInbox = inboxEmails.map((email) =>
                     email.id === emailId ? { ...email, read: true } : email
                 );
-                setInboxEmails(updatedInbox);
+                dispatch(emailInterfaceActions.setInboxEmails(updatedInbox));
                 const unread = updatedInbox.filter((email) => !email.read);
-                setUnreadMessages(unread.length);
+                dispatch(emailInterfaceActions.setUnreadMessages(unread.length));
                 console.log('Marked as Read');
             } else {
                 console.error('Failed to mark email as read');
@@ -129,10 +132,7 @@ const EmailInterface = () => {
         }
     };
 
-    useEffect(() => {
-        handleInboxClick();
-        console.log('Inbox Emails Updated');
-    }, []);
+ 
 
     const openModal = () => setShowModal(true);
     const closeModal = () => setShowModal(false);
@@ -145,8 +145,10 @@ const EmailInterface = () => {
             if (response.ok) {
                 console.log('Deleted mail successfully!')
                 const updatedInbox = inboxEmails.filter((email) => email.id !== mailID);
-                setInboxEmails(updatedInbox);
-                setSelectedMailIdToDelete(null);
+                const updatedSentBox = sentEmails.filter((email) => email.id !== mailID);
+                dispatch(emailInterfaceActions.setInboxEmails(updatedInbox));
+                dispatch(emailInterfaceActions.setSentEmails(updatedSentBox));
+                dispatch(emailInterfaceActions.setSelectedMailIdToDelete(null));
             } else {
                 throw new Error('Failed to delete mail');
             }
@@ -158,7 +160,7 @@ const EmailInterface = () => {
     
     const handleCheckboxClick = (mailID) => {
         setSelectedMailIdToDelete(prevState => prevState === mailID ? null : mailID);
-        setSelectedEmailId(null);
+        dispatch(emailInterfaceActions.setSelectedEmailId(null));
     };
    
    
@@ -207,7 +209,7 @@ const EmailInterface = () => {
 
                     <Col sm={8} md={9} lg={9} xl={10} className="mail-div  search mr-1">
                         <div className="bg-white p-4 ">
-                            <div className="border-bottom">
+                            <div >
                                 <Row className="pb-3">
                                     <Col>
                                         <InputGroup>
@@ -227,7 +229,7 @@ const EmailInterface = () => {
                                 </Row>
                                 <div className="max-h-96 overflow-y-auto">
                                     {selectedEmailId ? (
-                                        <EmailPage emailid={selectedEmailId} />
+                                        <EmailPage emailid={selectedEmailId} displaySenderMail={!displaySent}/>
                                     ) : (
                                         displaySent ? (
                                             sentEmails.map((email) => (
@@ -235,7 +237,7 @@ const EmailInterface = () => {
                                                 <Table  className={`checkbox-table m-0`}>
                                                     <tbody>
                                                         <tr>
-                                                            <td className={`check-box p-0 ${email.read ? 'read-background' : ''}`}>
+                                                            <td className={`check-box p-0 read-background`}>
                                                                 <input
                                                                     type='checkbox'
                                                                     onChange={(e) => handleCheckboxClick(email.id, e)}
@@ -248,23 +250,20 @@ const EmailInterface = () => {
                                                 <Table className='m-0'>
                                                     <tbody>
                                                         <tr onClick={() => handleEmailClick(email.id)}>
-                                                            <td className={`badge-email p-0 ${email.read ? 'read-background' : ''}`}>
-                                                                <span className={` ${!email.read ? 'bold' : ''}`}>
-                                                                    {email.read ? null : (
-                                                                        <span variant="primary" className=" badge mr-2" data-testid='blue-dot'> </span>
-                                                                    )}
+                                                            <td className={`badge-email p-0 read-background`}>
+                                                                <span >
                                                                     <span>&nbsp;&nbsp;</span>
                                                                     {`To: ${email.ReceiverMails}`}
                                                                 </span>
                                                             </td>
-                                                            <td className={`text-break ${email.read ? 'read-background' : ''} p-0`}>
-                                                                <div className={`content  ${!email.read ? 'bold' : ''} sub ${email.read ? 'read-background' : ''}`}>
-                                                                    <span className={`${!email.read ? 'bold' : ''} sub`}>{email.subject}</span>
+                                                            <td className={`text-break read-background p-0`}>
+                                                                <div className={`content  sub read-background`}>
+                                                                    <span className={` sub`}>{email.subject}</span>
                                                                     <span>&nbsp;-</span>
                                                                     <span className={`textcontent`}>{email.textContent}</span>
                                                                 </div>
                                                             </td>
-                                                            <td className={` p-0 current-time ${!email.read ? 'bold' : ''} ${email.read ? 'read-background' : ''}`}>
+                                                            <td className={` p-0 current-time read-background`}>
                                                                 <span>{email.currentTime}</span>
                                                             </td>
                                                         </tr>
@@ -273,7 +272,7 @@ const EmailInterface = () => {
                                                 <Table className={`delete-table m-0`}>
                                                     <tbody>
                                                         <tr>
-                                                            <td className={`p-0 ${email.read ? 'read-background' : ''}`}>
+                                                            <td className={`p-0 read-background`}>
                                                                 {selectedMailIdToDelete === email.id && (
                                                                     <Button className='delete-icon' onClick={() => handleDeleteMail(email.id)}>
                                                                         <DeleteIcon className='deleteIcon' style={{ fontSize: "18px" , marginBottom: "3px" }} />
@@ -305,7 +304,7 @@ const EmailInterface = () => {
                                                     <tbody>
                                                         <tr onClick={() => handleEmailClick(email.id)}>
                                                             <td className={`badge-email p-0 ${email.read ? 'read-background' : ''}`}>
-                                                                <span className={` ${!email.read ? 'bold' : ''}`}>
+                                                                <span className={` ${!email.read ? 'bold' : ''} dot-badge`}>
                                                                     {email.read ? null : (
                                                                         <span variant="primary" className=" badge mr-2" data-testid='blue-dot'> </span>
                                                                     )}

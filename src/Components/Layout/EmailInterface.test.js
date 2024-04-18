@@ -4,6 +4,7 @@ import EmailInterface from './EmailInterface'; // Assuming EmailInterface is the
 import { Provider } from 'react-redux';
 import store from '../Redux/Store/Store';
 import { Router } from 'react-router';
+import configureStore from 'redux-mock-store';
 
 describe('Reading Message Components', () => {
   test('Clicking on an Inbox Email Marks it as Read', async () => {
@@ -22,15 +23,58 @@ describe('Reading Message Components', () => {
 
 describe('Inbox Component', () => {
   test('Display Blue Dot for Unread Emails', () => {
-    render(
-    <Provider store={store}>
+    const { getByTestId } = render( // Corrected here
+      <Provider store={store}>
         <Router>
-        <EmailInterface />
+          <EmailInterface />
         </Router>
-    </Provider>);
+      </Provider>
+    );
     const blueDot = getByTestId('blue-dot');
     expect(blueDot).toBeInTheDocument();
   });
 
-  // Write similar tests for other scenarios
+  // Mock the Redux store
+  const mockStore = configureStore([]);
+
+  describe('EmailInterface component', () => {
+    let store;
+
+    beforeEach(() => {
+      store = mockStore({
+        emailInterface: {
+          sentEmails: [],
+          inboxEmails: [],
+          unreadMessages: 0,
+          displaySent: false,
+          selectedEmailId: null,
+          selectedMailIdToDelete: null,
+        },
+      });
+    });
+
+    test('deletes an email when delete button is clicked', async () => {
+      const { getByTestId } = render( // Corrected here
+        <Provider store={store}>
+          <Router>
+            <EmailInterface />
+          </Router>
+        </Provider>
+      );
+
+      // Simulate clicking on the delete button
+      fireEvent.click(getByTestId('delete-mail-button'));
+
+      // You might want to wait for the deletion process to finish
+      await waitFor(() => {
+        expect(store.getActions()).toEqual([
+          {
+            type: 'emailInterface/setSelectedMailIdToDelete',
+            payload: 'mailId', // Provide the id of the mail you want to delete
+          },
+          // Add more expected actions if necessary
+        ]);
+      });
+    });
+  });
 });

@@ -11,7 +11,7 @@ const MailNavbar = () =>{
         <NavbarCollapse id="basic-navbar-nav">
           <Nav className="mr-auto flex-column">
           <Button variant="primary" onClick={handler}>Compose</Button>
-            <NavLink to="/navbar/#inbox">Inbox</NavLink>  
+            <NavLink to="/navbar/inbox">Inbox</NavLink>  
           </Nav>
         </NavbarCollapse>
       </Navbar>
