@@ -1,5 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+// Sanitize email function
+export const sanitizeEmail = (email) => {
+  if (email) {
+    return email.replace(/[^a-zA-Z0-9]/g, "");
+  }
+  return "";
+};
+
 const initialState = {
   to: '',
   cc: '',

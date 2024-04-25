@@ -11,6 +11,7 @@ import FileOpenOutlinedIcon from '@mui/icons-material/FileOpenOutlined';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useDispatch, useSelector } from 'react-redux';
 import { emailInterfaceActions } from '../Redux/Slices/EmailInterfaceSlice';
+import useEmailApi from './CustomHooks/useEmailApi';
 
 const EmailInterface = () => {
     const { sentEmails, inboxEmails, unreadMessages, displaySent, selectedEmailId } = useSelector((state) => state.emailInterface);
@@ -20,6 +21,7 @@ const EmailInterface = () => {
     const [showModal, setShowModal] = useState(false); 
     const navigate = useNavigate();
     const firebaseUrl = 'https://mbc-project-fd64b-default-rtdb.firebaseio.com';
+    const { isLoading, error } = useEmailApi(firebaseUrl); // Use the custom hook to fetch emails
 
 
     const fetchEmails = async () => {
@@ -162,7 +164,12 @@ const EmailInterface = () => {
         setSelectedMailIdToDelete(prevState => prevState === mailID ? null : mailID);
         dispatch(emailInterfaceActions.setSelectedEmailId(null));
     };
-   
+    useEffect(() => {
+        const interval = setInterval(() => {
+            fetchEmails(); // Fetch emails periodically
+        }, 2000); // Fetch every 2 seconds
+        return () => clearInterval(interval); // Clear interval on component unmount
+    }, []);
    
 
     return (

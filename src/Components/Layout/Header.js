@@ -11,6 +11,7 @@ const MailHeader = () => {
   const navigate = useNavigate();
   const logoutHandler = () => {
     dispatch(authActions.logout());
+    
     navigate("/");
   };
   const title = "Mail Box";

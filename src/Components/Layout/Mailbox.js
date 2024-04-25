@@ -2,7 +2,8 @@ import React, { useState, useCallback } from "react";
 import { Editor } from "react-draft-wysiwyg";
 import { EditorState, convertToRaw } from "draft-js";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import { Container, Form, Button } from "react-bootstrap";
+import { Container, Form, Button, Spinner } from "react-bootstrap";
+import useMailboxApi from "./CustomHooks/useMailBoxApi";
 
 const Mailbox = () => {
   const [to, setTo] = useState("");
@@ -15,58 +16,53 @@ const Mailbox = () => {
   const [showBccBtn, setShowBccBtn] = useState(false);
   const [disappearCc, setDisappearCc] = useState(true);
   const [disappearBcc, setDisappearBcc] = useState(true);
-
+  const { isLoading, error, sendEmail } = useMailboxApi();
   const onEditorStateChange = (newEditorState) => {
     setEditorState(newEditorState);
   };
 
-  const sendEmail = useCallback(async () => {
-    const emailContent = convertToRaw(editorState.getCurrentContent());
-    const textContent = emailContent.blocks.map((block) => block.text).join("\n");
-    console.log("Sending email to:", to);
-    console.log("CC:", cc);
-    console.log("BCC:", bcc);
-    console.log("Subject:", subject);
-    console.log("Email content:", textContent);
-    console.log("Email content:", emailContent);
-    const currentTime = new Date().toLocaleTimeString('en-US', { hour12: true , hour: '2-digit', minute: '2-digit' });
-    console.log("Sent Time:", currentTime);
-    // Email validation regex
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(to)) {
-      alert("Please enter a valid email address in 'To' field");
-      return;
-    }
-    // Additional validation for CC and BCC fields if required
-
+  const handleSendMail = useCallback(async () => {
     try {
-      const fetchData = await fetch("https://mbc-project-fd64b-default-rtdb.firebaseio.com/mail.json", {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json",
-        },
-        body: JSON.stringify({
-            SenderMail : localStorage.getItem('email'),
-            ReceiverMails : `${to}`,
-            ...(cc.trim() !== "" && { cc }),
-            ...(bcc.trim() !== "" && { bcc }),         
-            subject,
-            textContent,
-            read: false,
-            currentTime,
-        }),
-      });
-
-      if (fetchData.ok) {
-        alert("Your mail has been sent successfully");
-      } else {
-        throw new Error("Failed to send email");
+      if (isLoading) {
+        return;
       }
+      const emailContent = convertToRaw(editorState.getCurrentContent());
+      const textContent = emailContent.blocks.map((block) => block.text).join("\n");
+      console.log("Sending email to:", to);
+      console.log("CC:", cc);
+      console.log("BCC:", bcc);
+      console.log("Subject:", subject);
+      console.log("Email content:", textContent);
+      console.log("Email content:", emailContent);
+      const currentTime = new Date().toLocaleTimeString('en-US', { hour12: true , hour: '2-digit', minute: '2-digit' });
+      console.log("Sent Time:", currentTime);
+      // Email validation regex
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(to)) {
+        alert("Please enter a valid email address in 'To' field");
+        return;
+      }
+      // Additional validation for CC and BCC fields if required
+
+      const emailData = {
+        SenderMail: localStorage.getItem('email'),
+        ReceiverMails: `${to}`,
+        ...(cc.trim() !== "" && { cc }),
+        ...(bcc.trim() !== "" && { bcc }),         
+        subject,
+        textContent,
+        read: false,
+        currentTime: new Date().toLocaleTimeString('en-US', { hour12: true , hour: '2-digit', minute: '2-digit' })
+      };
+
+      // Call sendEmail function from custom hook
+      await sendEmail(emailData);
     } catch (error) {
+      // Set error state if there's an error
       console.error("Error sending email:", error);
-      alert("Failed to send email. Please try again later.");
     }
-   }, [to , cc , bcc , subject ,editorState ]);
+  }, [to , cc , bcc , subject ,editorState, sendEmail ]);
+
 
   const convertValueCc = () => {
     setShowCcBtn(true);
@@ -182,9 +178,16 @@ const Mailbox = () => {
           />
         </Form.Group>
 
-        <Button variant="primary" onClick={sendEmail}>
-          Send
-        </Button>
+        {isLoading ? (
+          <Button variant="primary" disabled>
+            <Spinner animation="border" size="sm" />
+            Sending...
+          </Button>
+        ) : (
+          <Button variant="primary" onClick={handleSendMail}>
+            Send
+          </Button>
+        )}
       </Form>
     </Container>
   );
